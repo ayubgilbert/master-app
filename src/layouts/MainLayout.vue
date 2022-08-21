@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout v-on="dimuat" view="lHh Lpr lFf">
+    <q-header>
       <q-toolbar>
         <q-btn
           flat
@@ -8,37 +8,113 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="leftDrawerOpen = !leftDrawerOpen"
         />
-
-        <q-toolbar-title>
-          Quasar App
+        <q-toolbar-title v-if="!kepala">
+          {{ halaman }}
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title v-if="kepala">
+          <!-- cuma buat geser ke kanan -->
+        </q-toolbar-title>
+        <div side>
+          <q-icon
+            :name="kepala ? 'close' : 'visibility'"
+            class="cursor-pointer"
+            @click="kepala = !kepala"
+          />
+        </div>
       </q-toolbar>
-    </q-header>
 
+      <div v-if="kepala" class="q-px-lg q-pt-xl q-mb-md">
+        <div class="text-h5">{{ halaman }}</div>
+        <div class="text-subtittle1">{{ hariSekarang }}</div>
+        <q-img
+          transition="scale"
+          src="../statics/rektorat.jpg"
+          class="header-image absolute-top"
+        />
+      </div>
+    </q-header>
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      content-class="bg-grey-1"
+      :width="220"
+      :breakpoint="600"
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-img src="../statics/color1.jpg" style="height: 167px">
+          <div class="absolute-bottom bg-transparent">
+            <q-avatar size="56px" class="q-mb-sm">
+              <img src="../statics/ayub.jpg" />
+            </q-avatar>
+            <div class="text-weight-bold">{{ namaMahasiswa }}</div>
+            <div>@{{ nimMahasiswa }}</div>
+          </div>
+        </q-img>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item to="/" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="home" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Summary </q-item-section>
+        </q-item>
+
+        <hr />
+
+        <q-item to="/Farmer" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="face" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Farmer </q-item-section>
+        </q-item>
+
+        <q-item to="/garden" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="compost" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Garden </q-item-section>
+        </q-item>
+
+        <q-item to="/polygon" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="mode_of_travel" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Polygon </q-item-section>
+        </q-item>
+        <hr />
+        <q-item to="/training" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="diversity_3" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Training </q-item-section>
+        </q-item>
+
+        <q-item to="/coaching" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="agriculture" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Coaching </q-item-section>
+        </q-item>
+
+        <hr />
+
+        <q-item to="/pengaturan" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="settings" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Pengaturan </q-item-section>
+        </q-item>
+
+        <q-item @click="keluar" exact clickable v-ripple>
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+          <q-item-section class="sl-text"> Keluar </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -46,71 +122,70 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
+import { defineComponent, ref } from "vue";
+import { date } from "quasar";
 export default defineComponent({
-  name: 'MainLayout',
-
-  components: {
-    EssentialLink
-  },
-
-  setup () {
-    const leftDrawerOpen = ref(false)
+  name: "MainLayout",
+  setup() {
+    const leftDrawerOpen = ref(false);
 
     return {
-      essentialLinks: linksList,
+      // essentialLinks: linksList,
       leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
+      },
+    };
+  },
+  data() {
+    return {
+      // leftDrawerOpen: false,
+      kepala: true,
+      masuk: false,
+      halaman: "Lock Payment Koltiva",
+      namaMahasiswa: "Ayub Gilbert Dananjaya",
+      nimMahasiswa: null,
+    };
+  },
+  computed: {
+    hariSekarang() {
+      const timeStamp = Date.now();
+      return date.formatDate(timeStamp, "D MMMM YYYY");
+    },
+    dimuat() {
+      return this.logindulu();
+    },
+  },
+  methods: {
+    keluar: function () {
+      this.$q
+        .dialog({
+          title: "Keluar Aplikasi",
+          message: "Anda Yakin Ingin Keluar Dari Aplikasi?",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(() => {
+          this.$q.loading.show({
+            message: "Sedang Mengeluarkan Anda Dari Sistem..",
+          });
+          // hiding in 2.5s
+          this.timer = setTimeout(() => {
+            this.$q.loading.hide();
+            this.timer = void 0;
+            localStorage.clear();
+            this.$router.push("/login");
+          }, 2500);
+        });
+    },
+    logindulu: function () {
+      const idnim = localStorage.getItem("nimGue");
+      if (idnim != null) {
+        this.nimMahasiswa = idnim;
+      } else {
+        this.$router.push("/login");
       }
-    }
-  }
-})
+    },
+  },
+});
 </script>

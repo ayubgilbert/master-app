@@ -1,1 +1,53 @@
 // app global css in SCSS form
+
+// section login.vue
+.ubahpassword {
+  margin-bottom: 10px;
+  width: 280px;
+}
+.submit {
+  width: 280px;
+}
+.framelogin {
+  padding: 0;
+  padding-top: 5%;
+  margin: 0;
+}
+.no-padding {
+  padding: 0;
+}
+.teks-ubah {
+  opacity: 0.7;
+  margin-top: 40px;
+}
+.geser-semua {
+  margin-left: -5%;
+}
+
+//   section mainLayout.vue
+.header-image {
+  height: 100%;
+  z-index: -1;
+  opacity: 0.6;
+  filter: grayscale(100%);
+}
+// header sidebar
+.sideHeader {
+  height: 100%;
+  filter: grayscale(30%);
+}
+// side list menu
+.sl-text {
+  margin: 0;
+  margin-left: -20px;
+  font-size: 14px;
+}
+.close-header {
+  float: right;
+}
+
+//halaman KRS
+.krsh5 {
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
